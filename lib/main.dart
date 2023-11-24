@@ -1,6 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_calculator/colors.dart';
+import 'package:riverpod_calculator/widgets/button_widget.dart';
 
 Future main() async {
   // Ensure flutter created the the binding with host platform
@@ -21,6 +25,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+        scrollBehavior: const MaterialScrollBehavior(),
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(
@@ -29,6 +34,14 @@ class MainApp extends StatelessWidget {
         ),
         home: const MainPage(title: title),
       );
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }
 
 class MainPage extends StatefulWidget {
@@ -41,16 +54,82 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final minWidth = 300.0;
+  final _pageScrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.red,
-      child: Container(
-        alignment: Alignment.center,
-        child: Text(
-          'Hello',
-          style: Theme.of(context).textTheme.displayLarge,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: Container(
+          margin: const EdgeInsets.only(left: 8),
+          child: Text(widget.title),
         ),
+      ),
+      body: SafeArea(
+        child: Scrollbar(
+          controller: _pageScrollController,
+          interactive: true,
+          trackVisibility: true,
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            controller: _pageScrollController,
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: max(screenWidth, minWidth)),
+              child: Column(
+                children: [
+                  const Expanded(child: Placeholder()),
+                  Expanded(flex: 2, child: buildButtons())
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildButtons() => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: MyColors.background2,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: Column(
+          children: [
+            buildButtonRow('AC', '<', '', '÷'),
+            buildButtonRow('7', '8', '9', '⨯'),
+            buildButtonRow('4', '5', '6', '-'),
+            buildButtonRow('1', '2', '3', '+'),
+            buildButtonRow('0', '.', '', '='),
+          ],
+        ),
+      );
+
+  Widget buildButtonRow(
+    String first,
+    String second,
+    String third,
+    String fourth,
+  ) {
+    final row = [first, second, third, fourth];
+
+    return Expanded(
+      child: Row(
+        children: row
+            .map(
+              (text) => ButtonWidget(
+                text: text,
+                onClicked: () => print(text),
+                onClickedLong: () => print(text),
+              ),
+            )
+            .toList(),
       ),
     );
   }
