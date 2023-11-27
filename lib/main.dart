@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_calculator/colors.dart';
 import 'package:riverpod_calculator/widgets/button_widget.dart';
 
@@ -15,7 +16,7 @@ Future main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -83,7 +84,7 @@ class _MainPageState extends State<MainPage> {
               constraints: BoxConstraints(maxWidth: max(screenWidth, minWidth)),
               child: Column(
                 children: [
-                  const Expanded(child: Placeholder()),
+                  Expanded(child: buildResult()),
                   Expanded(flex: 2, child: buildButtons())
                 ],
               ),
@@ -93,6 +94,27 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
+  Widget buildResult() => const Padding(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              '0',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.white, fontSize: 36),
+            ),
+            SizedBox(height: 24),
+            Text(
+              '0',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey, fontSize: 18),
+            )
+          ],
+        ),
+      );
 
   Widget buildButtons() => Container(
         padding: const EdgeInsets.all(16),

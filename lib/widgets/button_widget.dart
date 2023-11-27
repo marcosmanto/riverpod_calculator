@@ -37,7 +37,7 @@ class ButtonWidget extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: SizedBox.expand(
               child: FittedBox(
                 child: text == '<'
