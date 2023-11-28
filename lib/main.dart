@@ -175,6 +175,8 @@ class MainPageState extends ConsumerState<MainPage> {
         calculator.equals();
       case '<':
         calculator.delete();
+      case 'AC':
+        calculator.reset();
       default:
         calculator.append(buttonText);
     }
