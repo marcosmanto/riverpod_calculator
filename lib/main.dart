@@ -159,7 +159,7 @@ class MainPageState extends ConsumerState<MainPage> {
               (text) => ButtonWidget(
                 text: text,
                 onClicked: () => onClickedButton(text),
-                onClickedLong: () => print(text),
+                onClickedLong: () => onLongClickedButton(text),
               ),
             )
             .toList(),
@@ -179,6 +179,14 @@ class MainPageState extends ConsumerState<MainPage> {
         calculator.reset();
       default:
         calculator.append(buttonText);
+    }
+  }
+
+  void onLongClickedButton(String buttonText) {
+    final calculator = ref.read(calculatorProvider.notifier);
+
+    if (buttonText == '<') {
+      calculator.reset();
     }
   }
 }
