@@ -16,18 +16,30 @@ class CalculatorNotifier extends StateNotifier<Calculator> {
     if (Utils.isOperator(buttonText) && Utils.isOperatorAtEnd(state.equation)) {
       // replace last typed operator
       equation = equation.substring(0, equation.length - 1) + buttonText;
-    } else {
+    } else if (state.shouldAppend) {
       equation = equation == '0'
           ? Utils.isOperator(buttonText)
               ? '0'
               : buttonText
           : equation + buttonText;
+    } else {
+      // not append restart equation to a new one
+      equation =
+          Utils.isOperator(buttonText) ? equation + buttonText : buttonText;
     }
-    state = state.copyWith(equation: equation);
+
+    state = state.copyWith(equation: equation, shouldAppend: true);
   }
 
   void equals() {
     calculate();
+    resetResult();
+  }
+
+  void resetResult() {
+    final result = state.result;
+
+    state = state.copyWith(equation: result, shouldAppend: false);
   }
 
   void calculate() {
