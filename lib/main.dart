@@ -105,18 +105,18 @@ class MainPageState extends ConsumerState<MainPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            height: 35,
-            child: Expanded(
-              child: Text(
-                calculator.equation,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    color: Colors.white, fontSize: 36, height: 1),
+          const Spacer(),
+          Expanded(
+            child: Text(
+              calculator.equation,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 36,
+                height: 1,
               ),
             ),
           ),
-          const SizedBox(height: 24),
           Text(
             calculator.result,
             overflow: TextOverflow.ellipsis,
@@ -170,6 +170,13 @@ class MainPageState extends ConsumerState<MainPage> {
   void onClickedButton(String buttonText) {
     final calculator = ref.read(calculatorProvider.notifier);
 
-    calculator.append(buttonText);
+    switch (buttonText) {
+      case '=':
+        calculator.equals();
+      case '<':
+        calculator.delete();
+      default:
+        calculator.append(buttonText);
+    }
   }
 }

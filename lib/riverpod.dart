@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_expressions/math_expressions.dart';
 import 'package:riverpod_calculator/utils.dart';
 
 import 'model/calculator.dart';
@@ -23,5 +24,34 @@ class CalculatorNotifier extends StateNotifier<Calculator> {
           : equation + buttonText;
     }
     state = state.copyWith(equation: equation);
+  }
+
+  void equals() {
+    calculate();
+  }
+
+  void calculate() {
+    final expression = state.equation.replaceAll('⨯', '*').replaceAll('÷', '/');
+    try {
+      final exp = Parser().parse(expression);
+      final model = ContextModel();
+
+      final result = '${exp.evaluate(EvaluationType.REAL, model)}';
+
+      state = state.copyWith(result: result);
+    } catch (e) {}
+  }
+
+  void delete() {
+    final equation = state.equation;
+    if (equation != '0') {
+      if (equation.length == 1) {
+        state = state.copyWith(equation: '0');
+      } else if (equation.length > 1) {
+        state = state.copyWith(
+            equation: equation.substring(0, equation.length - 1));
+      }
+    }
+    calculate();
   }
 }
