@@ -43,15 +43,20 @@ class CalculatorNotifier extends StateNotifier<Calculator> {
   }
 
   void delete() {
-    final equation = state.equation;
-    if (equation != '0') {
-      if (equation.length == 1) {
-        state = state.copyWith(equation: '0');
-      } else if (equation.length > 1) {
-        state = state.copyWith(
-            equation: equation.substring(0, equation.length - 1));
-      }
+    final equation = state.equation.substring(0, state.equation.length - 1);
+
+    if (equation.isEmpty) {
+      reset();
+    } else {
+      state = state.copyWith(
+        equation: equation,
+      );
     }
+
     calculate();
+  }
+
+  void reset() {
+    state = state.copyWith(equation: '0', result: '0');
   }
 }
